@@ -13,6 +13,8 @@
 %DPTECHNICS datasheet variables
 \newcommand{\dptproduct}{Walter - WiFi/BLE/NB-IoT/LTE-M module}
 
+\newcommand{\textoverline}[1]{$\overline{\mbox{#1}}$}
+
 %page footers and headers settings
 \pagestyle{fancy}
 \fancyhead{}
@@ -35,7 +37,7 @@
 \vfill
 \rule{487pt}{1pt}
 
-\hfill Revision 0.2 - \today
+\hfill Revision 0.3 - \today
 \end{titlepage}
 \section{General information}
 Walter is an ESP32-S3 based IoT board that offers WiFi, Bluetooth 5 (LE), cellular CAT M1/NB1/NB2 and GNSS connectivity. 
@@ -53,27 +55,32 @@ This combination makes Walter a unique development board that offers a rich feat
 	\item Bluetooth: 2Mbps Bluetooth 5 (LE), Bluetooth Mesh
 	\item 24 physical GPIO pins 
 \end{itemize}
-\section{Absolute maximum ratings}
+
+\section{Electrical characteristics}
 For the most reliable use and stability of the module we advice to use the typical ratings. We do not guarantee the correct functioning of the device outsite the minimum and maxium range of the module. 
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|p{5cm}|c|c|c|c|}
 \hline
-{\bf Parameter} & {\bf Units} & {\bf Minimum rating} & {\bf Typical rating} & {\bf Maxium rating} \\
+{\bf Parameter} & {\bf Units} & {\bf Minimum rating} & {\bf Typical rating} & {\bf Maximum rating} \\
 \hline
 \hline
 DC Supply Voltage & V & 3.0 & 5.0 & 5.5 \\
 \hline
 Digital I/O Voltage & V & 2.64 & 3.3 & 3.6 \\
 \hline
+Power consumption @3.3V & A & -- & -- & 1.5 \\
+\hline
+3.3V output & A & -- & -- & 0.25 \\
+\hline
 \end{tabular}
 \end{center}
 
 \newpage
 \section{Interfaces}
-Walter provides a total of 28 physical pins (3 power, 1 strapping and 24 IO) to interface with external parts. This chapter provides information about these pins as well as internally connected pins and the testpoints located at the bottom of the board.\newline
+Walter provides a total of 28 physical pins (3 power, 1 strapping pin and 24 I/O pins) to interface with external parts. This chapter provides information about these pins as well as internally connected pins and the testpoints located at the bottom of the board.\\
 
-Power supply pins and their details are available in section \ref{power} about the power characteristics.\newline
+Power supply pins and their details are available in section \ref{power} about the power characteristics.\\
 
 For more information about specific pins regarding the ESP32-S3 Wroom module or the Sequans GM02SP module, please refer to the datasheet of the corresponding module.
 
@@ -81,80 +88,80 @@ For more information about specific pins regarding the ESP32-S3 Wroom module or 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[height=11cm]{back_pinout.png}
-    \caption{Walter Board Pin Assigment}
+    \includegraphics[height=14cm]{walter-pinout-topview.pdf}
+    \caption{Walter pinout (top view)}
     \label{fig:walter_pin_assignment}
 \end{figure}
 \newpage
 \subsubsection{External Pins} \label{external_pins}
-Table \ref{table_exteral_pin} contains the description of the physical pins on Walter available on the underside of the board. \newline
-The order of this table, in reference to the board, is top to bottom and left to right.\newline
+Table \ref{table_exteral_pin} contains the description of the physical pins on Walter available on the underside of the board. \\
+The order of this table, in reference to the board, is top to bottom and left to right.\\
 \renewcommand{\arraystretch}{1.5}
 \begin{table}[!h]
 \begin{center}
-\begin{tabular}{|c|c|c|c|p{9.5cm}|}
+\begin{tabular}{|c|c|c|c|c|p{9.5cm}|}
 \hline
-{\bf Pin} & \multicolumn{1}{c|}{\bf ESP pin} & \multicolumn{1}{c|}{\bf Input/Output} & \multicolumn{1}{c|}{\bf Description} \\
+{\bf Pin} & {\bf Function} & \multicolumn{1}{c|}{\bf ESP pin} & \multicolumn{1}{c|}{\bf Input/Output} & \multicolumn{1}{c|}{\bf Description} \\
 \hline
 \hline
-VIN & N/A & power input & DC Power Input (Characteristics \ref{power})\\
+1 & RESET & EN & input & ESP32 reset with 10k pullup \\
 \hline
-GND & N/A & power input & GND Connection \\
+2 & IO44/RX0 & RXD0 & bidirectional & ESP32 UART0 Receive \\
 \hline
-3V3 SWITCHED & N/A & power output & Switchable +3.3VDC output (Characteristics \ref{power}) \\
+3 & IO43/TX0 & TXD0 & bidirectional & ESP32 UART0 Transmit \\
 \hline
-10 & IO10 & bidirectional & General purpose I/O \\
+4 & \textoverline{DFU}/\textoverline{3V3\_EN} & IO0 & bidirectional & DFU when low on boot and 3V3 output enable \\
 \hline
-9 & IO9 & bidirectional & General purpose I/O \\
+5 & IO12 & IO12 & bidirectional & General purpose I/O \\
 \hline
-8 & IO8 & bidirectional & General purpose I/O \\
+6 & IO11 & IO11 & bidirectional & General purpose I/O \\
 \hline
-18 & IO18 & bidirectional & General purpose I/O \\
+7 & IO13 & IO13 & bidirectional & General purpose I/O \\
 \hline
-17 & IO17 & bidirectional & General purpose I/O \\
+8 & IO38 & IO38 & bidirectional & General purpose I/O \\
 \hline
-16 & IO16 & bidirectional & General purpose I/O \\
+9 & IO39 & IO39 & bidirectional & General purpose I/O \\
 \hline
-15 & IO15 & bidirectional & General purpose I/O \\
+10 & IO40 & IO40 & bidirectional & General purpose I/O \\
 \hline
-7 & IO7 & bidirectional & General purpose I/O \\
+11 & IO41 & IO41 & bidirectional & General purpose I/O \\
 \hline
-6 & IO6 & bidirectional & General purpose I/O \\
+12 & IO42 & IO42 & bidirectional & General purpose I/O \\
 \hline
-5 & IO5 & bidirectional & General purpose I/O \\
+13 & IO2 & IO2 & bidirectional & General purpose I/O \\
 \hline
-4 & IO4 & bidirectional & General purpose I/O \\
+14 & IO1 & IO1 & bidirectional & General purpose I/O \\
 \hline
-EN & RESET & input & ESP32 reset with 10k pullup \\
+15 & IO4 & IO4 & bidirectional & General purpose I/O \\
 \hline
-RX0 & RXD0 & bidirectional & ESP32 UART0 Receive \\
+16 & IO5 & IO5 & bidirectional & General purpose I/O \\
 \hline
-TX0 & TXD0 & bidirectional & ESP32 UART0 Transmit \\
+17 & IO6 & IO6 & bidirectional & General purpose I/O \\
 \hline
-0/3V3\_EN & IO0 & bidirectional & Bootloader and 3.3VDC switch after boot \\
+18 & IO7 & IO7 & bidirectional & General purpose I/O \\
 \hline
-12 & IO12 & bidirectional & General purpose I/O \\
+19 & IO15 & IO15 & bidirectional & General purpose I/O \\
 \hline
-11 & IO11 & bidirectional & General purpose I/O \\
+20 & IO16 & IO16 & bidirectional & General purpose I/O \\
 \hline
-13 & IO13 & bidirectional & General purpose I/O \\
+21 & IO17 & IO17 & bidirectional & General purpose I/O \\
 \hline
-38 & IO38 & bidirectional & General purpose I/O \\
+22 & IO18 & IO18 & bidirectional & General purpose I/O \\
 \hline
-39 & IO39 & bidirectional & General purpose I/O \\
+23 & IO8 & IO8 & bidirectional & General purpose I/O \\
 \hline
-40 & IO40 & bidirectional & General purpose I/O \\
+24 & IO9 & IO9 & bidirectional & General purpose I/O \\
 \hline
-41 & IO41 & bidirectional & General purpose I/O \\
+25 & IO10 & IO10 & bidirectional & General purpose I/O \\
 \hline
-42 & IO42 & bidirectional & General purpose I/O \\
+26 & 3V3 OUT & N/A & power output & Switchable 3.3VDC output \\
 \hline
-2 & IO2 & bidirectional & General purpose I/O \\
+27 & GND & GND & power ground & GND connection \\
 \hline
-1 & IO1 & bidirectional & General purpose I/O \\
+28 & VIN & N/A & power input & DC Power input port\\
 \hline
 \end{tabular}
-\caption{\label{table_exteral_pin}Walter External Pin Definitions}
+\caption{\label{table_exteral_pin}Walter pin definitions}
 \end{center}
 \end{table}
 \newpage
@@ -175,7 +182,7 @@ Table \ref{table_interal_pin} contains the pin descriptions of the internally co
     \hline
     IO46 & LTE\_WAKE0 \\
     \hline
-    IO45 & LTE\_UART0\_TX (See \ref{lte_uart})\\
+    IO48 & LTE\_UART0\_TX (See \ref{lte_uart})\\
     \hline
     IO14 & LTE\_UART0\_RX (See \ref{lte_uart})\\
     \hline
@@ -183,88 +190,74 @@ Table \ref{table_interal_pin} contains the pin descriptions of the internally co
     \hline
     IO47 & LTE\_UART0\_CTS (See \ref{lte_uart})\\
     \hline
-    IO48 & LTE\_RESET\\
+    IO45 & LTE\_RESET\\
     \hline
     \end{tabular}
     \caption{\label{table_interal_pin}Walter Internal Pin Definitions}
 \end{table}
+
 \newpage
 \subsubsection{Testpoints} \label{testpoints}
-Walter contains 23 testpoints on the bottom of the board that serve multiple purposes. You can use these pins for debugging, interfacing and/or flashing of the Sequans GM02SP and the ESP32-S3-WROOM Modules.
+Walter contains 22 testpoints on the bottom of the board that serve multiple purposes. You can use these pins for debugging, interfacing and/or flashing of the Sequans GM02SP and the ESP32-S3-WROOM module.
 \begin{figure}[h]
     \centering
-    \includegraphics[height=5cm]{testpoints.png}
-    \caption{Walter Testpoints Layout}
+    \includegraphics[height=5cm]{walter-testpoints-topview.pdf}
+    \caption{Walter testpoints (top view)}
     \label{fig:testpoints}
 \end{figure}
 
-Table \ref{tab:testpoints} contains the description of the testpoints as depicted in Figure \ref{fig:testpoints}.
 \begin{center}
 \begin{tabular}{|c|p{9.5cm}|}
     \hline
     {\bf Number} & \multicolumn{1}{c|}{\bf Description} \\
     \hline
     \hline
-    1 & LTE\_JTAG\_TRSTN\\
+    1 & Sequans GM02SP JTAG TDO\\
     \hline
-    2 & LTE\_JTAG\_TCK\\
+    2 & Sequans GM02SP JTAG TCK\\
     \hline
-    3 & LTE\_JTAG\_TDO\\
+    3 & Sequans GM02SP JTAG TRSTN\\
     \hline
-    4 & LTE\_UART2\_RTS\\
+    4 & Sequans GM02SP JTAG TMS\\
     \hline
-    5 & LTE\_UART2\_CTS\\
+    5 & Sequans GM02SP JTAG TDI\\
     \hline
-    6 & LTE\_PS\_STATUS\\
+    6 & Sequans GM02SP PS status\\
     \hline
-    7 & LTE\_JTAG\_TDI\\
+    7 & Sequans GM02SP RES/FFF\_FFH \\
     \hline
-    8 & LTE\_JTAG\_TMS\\
+    8 & Sequans GM02SP RX0 \\
     \hline
-    9 & LTE\_UART2\_RX\\
+    9 & Sequans GM02SP TX0 \\
     \hline
-    10 & LTE\_UART1\_RX\\
+    10 & Sequans GM02SP TX1 \\
     \hline
-    11 & LTE\_UART1\_TX\\
+    11 & Sequans GM02SP RX1 \\
     \hline
-    12 & LTE\_UART0\_TX (Connected to ESP32 GPIO45)\\
+    12 & Sequans GM02SP RX2 \\
     \hline
-    13 & LTE\_UART0\_RX (Connected to ESP32 GPIO14)\\
+    13 & Sequans GM02SP CTS0 \\
     \hline
-    14 & LTE\_UART2\_TX\\
+    14 & Sequans GM02SP RTS0 \\ 
     \hline
-    15 & LTE\_UART1\_RTS (Pull-up R4 not fitted)\\
+    15 & Sequans GM02SP CTS1 \\
     \hline
-    16 & LTE\_UART1\_CTS (Pull-up R6 not fitted)\\
+    16 & Sequans GM02SP RTS1 \\
     \hline
-    17 & LTE\_UART0\_RTS (100k pull-up)\\
+    17 & Sequans GM02SP TX2 \\
     \hline
-    18 & LTE\_UART0\_CTS (100k pull-up)\\
+    18 & Walter input power \\
+    \hline
+    19 & 3V3 output (not switched) \\
+    \hline
+    20 & Sequans GM02SP 1V8 output \\
+    \hline
+    21 & Ground \\
+    \hline
+    22 & ESP32-S3 GPIO3 (strapping pin)\\
     \hline
 \end{tabular}
 \end{center}
-\newpage
-\begin{table}[!h]
-    \centering
-    \begin{tabular}{|c|p{9.5cm}|}
-    \hline
-    {\bf Number} & \multicolumn{1}{c|}{\bf Description} \\
-    \hline
-    \hline
-    19 & ESP\_GPIO3 (Strapping pin)\\
-    \hline
-    20 & GND\\
-    \hline
-    21 & +1.8VDC REF from GM02SP\\
-    \hline
-    22 & +3.3VDC\\
-    \hline
-    23 & VBUS\\
-    \hline
-    \end{tabular}
-    \caption{Walter Testpoints Description}
-    \label{tab:testpoints}
-\end{table}
 
 \subsubsection{Others}
 Not all pins of the ESP32-S3 and Sequans GM02SP on Walter are internally connected, available through physical pins or testpoints. These pins are either reserved for use by the component itself or deemed not necessary to be available externally.
@@ -276,14 +269,14 @@ The Sequans GM02SP module has 3 UART interfaces available by default. Only UART0
 \section{Electrical and RF Characteristics} \label{power_rf_characteristics}
 \subsection{Power} \label{power}
 \subsubsection{Power Input}
-Walter can be powered either by connecting a USB-C cable (see USB\_SECTION\_HERE) or via the VIN pin (see pinout \ref{external_pins}).\newline
+Walter can be powered either by connecting a USB-C cable (see USB\_SECTION\_HERE) or via the VIN pin (see pinout \ref{external_pins}).\\
 
 \textbf{DO NOT} power Walter with both the USB-C connection and the VIN-pin! This can lead to seriously damaging the board and external peripherals connected to it!
 \subsubsection{Power Output}
 Walter contains a Texas Instruments LM3281YFQR DC-DC Converter which takes power from either the USB-C port or the VIN-pin and converts it to a regulated +3.3VDC supply.
 \subsubsection{Power Consumption}
 \subsection{GPIO} \label{gpio}
-All GPIO pins exposed via the physical pin headers on Walter are 3.3V resistant. If you want to connect 5V or other forms of logic, please use a suitable logic level converter or voltage divider.\newline
+All GPIO pins exposed via the physical pin headers on Walter are 3.3V resistant. If you want to connect 5V or other forms of logic, please use a suitable logic level converter or voltage divider.\\
 
 Please reference the corresponding datasheets for all minimum, maximum and typical ratings of I/O pins of the ESP32-S3-WROOM or Sequans GM02SP Modules that may or may not be exposed on the Walter Development Board.
 \subsection{RF}
