@@ -277,10 +277,17 @@ The Sequans GM02SP module has 3 hardware UART interfaces. Only UART0 is connecte
 	\item UART2 (115200@8N1 no HW handshaking): console log output.
 \end{itemize}
 
+Please not that any UART host should be connected as follows:
+\begin{itemize}
+	\item \verb+RX <-> RX+
+	\item \verb+TX <-> TX+
+	\item \verb+RTS <-> RTS+
+	\item \verb+CTS <-> CTS+
+\end{itemize}
 \section{Electrical and RF Characteristics} \label{power_rf_characteristics}
 \subsection{Power} \label{power}
 \subsubsection{Power Input}
-Walter can be powered either by connecting a USB-C cable (see USB\_SECTION\_HERE) or via the VIN pin (see pinout \ref{external_pins}).\\
+Walter can be powered either by connecting a USB-C cable or via the VIN pin (see pinout \ref{external_pins}).\\
 
 \textbf{DO NOT} power Walter with both the USB-C connection and the VIN-pin! This can lead to seriously damaging the board and external peripherals connected to it!
 \subsubsection{Power Output}
@@ -309,6 +316,19 @@ Please refer to the "Getting Started with Walter" available on our GitHub to get
 \subsection{AT commands}
 
 The full set of supported AT commands can be found in the documentation of the Sequans GM02SP. This can be downloaded from this link: \href{https://www.renesas.com/eu/en/document/mah/ryz024-modules-command-users-manual?language=en}{https://www.renesas.com/eu/en/document/mah/ryz024-modules-command-users-manual?language=en}.
+
+\subsection{Manual SFU of the GM02SP}
+
+The second hardware UART of the GM02SP, namely \verb+UART1+, is used for manual firmware upgrades. To do a manual serial SFU of the GM02SP in Walter you must connect \verb+UART1+ via the testpads on the bottom of the module. Use an FTDI UART and make the following connections:
+\begin{itemize}
+	\item \verb+Walter RX1 <-> FTDI RX+
+	\item \verb+Walter TX1 <-> FTDI TX+
+	\item \verb+Walter RTS1 <-> FTDI RTS+
+	\item \verb+Walter CTS1 <-> FTDI CTS+
+	\item \verb+Walter GND <-> FTDI GND+
+	\item \verb$Walter Vin <-> +5VDC$
+\end{itemize}
+Make sure that the 5V power source which is powering Walter and the FTDI share a common ground. To enable smooth updating it is best not to connect the USB-C on Walter to the computer on which the SFU software is running. Now follow the instructions which are bundled with the SFU release.
 
 \section{Operating conditions}
 The module can operate in a wide range of temperatures and conditions. The following are guidelines in which the module is guaranteed to work correctly. 
