@@ -37,7 +37,7 @@
 \vfill
 \rule{487pt}{1pt}
 
-\hfill Revision 0.3 - \today
+\hfill Revision 0.4 - \today
 \end{titlepage}
 \section{General information}
 Walter is an ESP32-S3 based IoT board that offers WiFi, Bluetooth 5 (LE), cellular CAT M1/NB1/NB2 and GNSS connectivity. 
@@ -201,8 +201,8 @@ Table \ref{table_interal_pin} contains the pin descriptions of the internally co
 Walter contains 22 testpoints on the bottom of the board that serve multiple purposes. You can use these pins for debugging, interfacing and/or flashing of the Sequans GM02SP and the ESP32-S3-WROOM module.
 \begin{figure}[h]
     \centering
-    \includegraphics[height=5cm]{walter-testpoints-topview.pdf}
-    \caption{Walter testpoints (top view)}
+    \includegraphics[height=5cm]{walter-testpoints.pdf}
+    \caption{Walter testpoints}
     \label{fig:testpoints}
 \end{figure}
 
@@ -259,12 +259,23 @@ Walter contains 22 testpoints on the bottom of the board that serve multiple pur
 \end{tabular}
 \end{center}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[height=8cm]{walter-testpoints-named.pdf}
+    \caption{Bottom view of the Walter testpoints with their connection names.}
+    \label{fig:testpoints}
+\end{figure}
+
 \subsubsection{Others}
 Not all pins of the ESP32-S3 and Sequans GM02SP on Walter are internally connected, available through physical pins or testpoints. These pins are either reserved for use by the component itself or deemed not necessary to be available externally.
 
-\subsection{LTE UART} \label{lte_uart}
-The Sequans GM02SP module has 3 UART interfaces available by default. Only UART0 is connected to the ESP32-S3 Wroom Module on Walter as shown in Table \ref{table_interal_pin}. Communication between modules is possible with AT-commands. Please refer to the corresponding AT Command reference manual of the Sequans GM02SP for all possible AT-commands.
-
+\subsection{Sequans GM02SP UARTs} \label{lte_uart}
+The Sequans GM02SP module has 3 hardware UART interfaces. Only UART0 is connected to the ESP32-S3 Wroom Module on Walter as shown in Table \ref{table_interal_pin}. Communication between modules is possible with AT-commands. Please refer to the corresponding AT command reference manual of the Sequans GM02SP for all possible AT-commands. The UARTs have the following functionality by default:
+\begin{itemize}
+	\item UART0 (115200@8N1 with HW handshaking): used for AT commands.
+	\item UART1 (921600@8N1 with HW handshaking): used for manual firmware updates and/or custom software installation.
+	\item UART2 (115200@8N1 no HW handshaking): console log output.
+\end{itemize}
 
 \section{Electrical and RF Characteristics} \label{power_rf_characteristics}
 \subsection{Power} \label{power}
@@ -279,7 +290,7 @@ Walter contains a Texas Instruments LM3281YFQR DC-DC Converter which takes power
 All GPIO pins exposed via the physical pin headers on Walter are 3.3V resistant. If you want to connect 5V or other forms of logic, please use a suitable logic level converter or voltage divider.\\
 
 Please reference the corresponding datasheets for all minimum, maximum and typical ratings of I/O pins of the ESP32-S3-WROOM or Sequans GM02SP Modules that may or may not be exposed on the Walter Development Board.
-\subsection{RF}
+
 \newpage
 \section{Mechanical information}
 \begin{figure}[h]
@@ -291,8 +302,13 @@ Please reference the corresponding datasheets for all minimum, maximum and typic
 \end{figure}
 
 \section{Software}
+\subsection{Libraries and frameworks from QuickSpot}
 Walter comes without firmware out of the box. You can easily program and upload your own firmware for Walter using MicroPython, Arduino, ESP-IDF... 
 Please refer to the "Getting Started with Walter" available on our GitHub to get you up and running fast.
+
+\subsection{AT commands}
+
+The full set of supported AT commands can be found in the documentation of the Sequans GM02SP. This can be downloaded from this link: \href{https://www.renesas.com/eu/en/document/mah/ryz024-modules-command-users-manual?language=en}{https://www.renesas.com/eu/en/document/mah/ryz024-modules-command-users-manual?language=en}.
 
 \section{Operating conditions}
 The module can operate in a wide range of temperatures and conditions. The following are guidelines in which the module is guaranteed to work correctly. 
