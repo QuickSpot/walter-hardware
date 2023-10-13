@@ -6,8 +6,8 @@
 
   (title_block
     (title "Walter Feels")
-    (date "2023-10-06")
-    (rev "2.0")
+    (date "2023-10-13")
+    (rev "2.1")
     (company "DPTechnics BV")
     (comment 1 "Checked by: Jonas Maes")
     (comment 2 "Engineer: Daan Pape")
@@ -2528,12 +2528,6 @@
     (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/fbe6edfa-815e-413d-a028-57a046026dc9"
       (reference "#PWR070") (unit 1) (value "GND") (footprint "")
     )
-    (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/cf328711-0f84-4fe1-9c4d-665b0f4de398"
-      (reference "#PWR071") (unit 1) (value "GND") (footprint "")
-    )
-    (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/f162cbab-5f35-42ac-a6df-66469fd39468"
-      (reference "#PWR072") (unit 1) (value "GND") (footprint "")
-    )
     (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/428338b0-ae3d-414b-aa20-43ca74f39c19"
       (reference "#PWR073") (unit 1) (value "GND") (footprint "")
     )
@@ -2666,8 +2660,14 @@
     (path "/3e91d738-6ca4-4fbf-8ccb-afdeb7a0dde4"
       (reference "#PWR0116") (unit 1) (value "GND") (footprint "")
     )
+    (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/b7c9e37d-1912-429b-ae04-5dc9019462ad"
+      (reference "#PWR0117") (unit 1) (value "GND") (footprint "")
+    )
     (path "/9517361d-0a5e-41e9-9d60-068c38a385df"
       (reference "#PWR0118") (unit 1) (value "+3.3V") (footprint "")
+    )
+    (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/63c533a3-2299-4648-9b23-8a6273292c31"
+      (reference "#PWR0119") (unit 1) (value "GND") (footprint "")
     )
     (path "/996d886b-2d53-4c0e-b229-9eeee497b02a"
       (reference "C1") (unit 1) (value "100µF") (footprint "Capacitor_SMD:C_1210_3225Metric")
@@ -3110,8 +3110,8 @@
     (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/a30daaf3-e100-4cfa-a0f5-81f031e41541"
       (reference "U7") (unit 1) (value "HDC1080DMBR") (footprint "Package_SON:Texas_PWSON-N6")
     )
-    (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/99a3512f-0062-45c8-bcdf-32988ae91d62"
-      (reference "U8") (unit 1) (value "BMP280") (footprint "Package_LGA:Bosch_LGA-8_2x2.5mm_P0.65mm_ClockwisePinNumbering")
+    (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/3279e2ce-dca0-45c0-b691-ee8af79f018e"
+      (reference "U8") (unit 1) (value "LPS22HBTR") (footprint "LPS22HBTR:HLGA10_2X2_STM-L")
     )
     (path "/5bd1c681-7a53-43c5-b13b-f8a6101b7855/e2fa7056-551d-4d1a-b19b-abfe4d242f7a"
       (reference "U9") (unit 1) (value "LSM6DSM") (footprint "Package_LGA:LGA-14_3x2.5mm_P0.5mm_LayoutBorder3x4y")
