@@ -6,8 +6,8 @@
 
   (title_block
     (title "Walter Feels")
-    (date "2023-10-13")
-    (rev "2.1")
+    (date "2024-03-13")
+    (rev "2.3")
     (company "DPTechnics BV")
     (comment 1 "Checked by: Jonas Maes")
     (comment 2 "Engineer: Daan Pape")
@@ -1125,6 +1125,9 @@
     )
     (property "Datasheet" "LPS22HBTR" (id 3) (at 156.21 76.2 0)
       (effects (font (size 1.27 1.27) italic) hide)
+    )
+    (property "JLCPCB" "C94049" (id 4) (at 95.885 93.345 0)
+      (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid df8285d8-e964-4023-a225-515c7da0e345))
     (pin "10" (uuid 1a285101-4984-4337-a8cb-be142556e7c8))
