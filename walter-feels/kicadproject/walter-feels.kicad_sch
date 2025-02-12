@@ -6,8 +6,8 @@
 
   (title_block
     (title "Walter Feels")
-    (date "2024-03-13")
-    (rev "2.3")
+    (date "2025-02-12")
+    (rev "2.4")
     (company "DPTechnics BV")
     (comment 1 "Checked by: Jonas Maes")
     (comment 2 "Engineer: Daan Pape")
@@ -2983,8 +2983,8 @@
     (path "/08cee188-73a2-4ad6-8cfe-d7d16ef1b8b7/68f94d7d-80db-4595-bfc5-3a989f161562"
       (reference "C76") (unit 1) (value "100µF") (footprint "Capacitor_SMD:C_1210_3225Metric")
     )
-    (path "/bf5f5a11-35e3-4b1f-9cb0-4a9b703569fa/a13be4f5-5883-46f1-bf1b-3ff3e2a7bb75"
-      (reference "C77") (unit 1) (value "10µF") (footprint "Capacitor_SMD:C_1206_3216Metric")
+    (path "/bf5f5a11-35e3-4b1f-9cb0-4a9b703569fa/89a8541b-f58f-47b0-a546-ae8d3e13ed6e"
+      (reference "C77") (unit 1) (value "4.7μF") (footprint "Capacitor_SMD:C_0603_1608Metric")
     )
     (path "/bf5f5a11-35e3-4b1f-9cb0-4a9b703569fa/799ebb35-5cc8-4e1a-8710-33d8951f171d"
       (reference "C78") (unit 1) (value "0.1µF") (footprint "Capacitor_SMD:C_0603_1608Metric")

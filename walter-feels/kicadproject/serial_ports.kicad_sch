@@ -6,8 +6,8 @@
 
   (title_block
     (title "Walter Feels")
-    (date "2024-03-13")
-    (rev "2.3")
+    (date "2025-02-12")
+    (rev "2.4")
     (company "DPTechnics BV")
     (comment 1 "Checked by: Jonas Maes")
     (comment 2 "Engineer: Daan Pape")
@@ -2817,8 +2817,8 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 8c755503-9316-4c7e-b6fb-247259cb5368))
-    (pin "2" (uuid 7280a2f9-0350-46d1-ab4d-660a5ac6d65c))
+    (pin "2" (uuid 7280a2f9-0350-46d1-ab4d-660a5ac6d65f))
     (pin "3" (uuid 42645538-305d-4b9d-9356-d83a7ad85865))
-    (pin "2" (uuid 7280a2f9-0350-46d1-ab4d-660a5ac6d65c))
+    (pin "2" (uuid 7280a2f9-0350-46d1-ab4d-660a5ac6d65f))
   )
 )
