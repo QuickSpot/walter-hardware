@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 155.91 70.3">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        fill-rule: evenodd;
+        stroke: red;
+        stroke-miterlimit: 10;
+      }
+    </style>
+  </defs>
+  <g id="Part_Feature322" data-name="Part  Feature322">
+    <path id="Part_Feature322_f0000" data-name="Part  Feature322 f0000" class="cls-1" d="M18.43,6.8h0c1.57,0,2.83-1.27,2.83-2.83h0c0,1.57-1.27,2.83-2.83,2.83Z"/>
+    <path id="Part_Feature322_f0001" data-name="Part  Feature322 f0001" class="cls-1" d="M4.25,6.8h14.17H4.25Z"/>
+    <path id="Part_Feature322_f0002" data-name="Part  Feature322 f0002" class="cls-1" d="M21.26,3.97h0v-1.13h0v1.13Z"/>
+    <path id="Part_Feature322_f0003" data-name="Part  Feature322 f0003" class="cls-1" d="M18.43,6.8c1.57,0,2.83-1.27,2.83-2.83v-1.13C21.26,1.27,22.53,0,24.09,0h100.63c1.57,0,2.83,1.27,2.83,2.83v1.13c0,1.57,1.27,2.83,2.83,2.83h21.26c2.35,0,4.25,1.9,4.25,4.25v48.19c0,2.35-1.9,4.25-4.25,4.25h-21.26c-1.57,0-2.83,1.27-2.83,2.83v1.13c0,1.57-1.27,2.83-2.83,2.83H24.09c-1.57,0-2.83-1.27-2.83-2.83v-1.13c0-1.57-1.27-2.83-2.83-2.83H4.25C1.9,63.5,0,61.59,0,59.24V11.06C0,8.71,1.9,6.8,4.25,6.8h14.17Z"/>
+    <path id="Part_Feature322_f0004" data-name="Part  Feature322 f0004" class="cls-1" d="M21.26,3.97v-1.13C21.26,1.27,22.53,0,24.09,0h100.63c1.57,0,2.83,1.27,2.83,2.83v1.13c0,1.57,1.27,2.83,2.83,2.83h21.26c2.35,0,4.25,1.9,4.25,4.25v48.19c0,2.35-1.9,4.25-4.25,4.25h-21.26c-1.57,0-2.83,1.27-2.83,2.83v1.13c0,1.57-1.27,2.83-2.83,2.83H24.09c-1.57,0-2.83-1.27-2.83-2.83v-1.13c0-1.57-1.27-2.83-2.83-2.83H4.25C1.9,63.5,0,61.59,0,59.24V11.06C0,8.71,1.9,6.8,4.25,6.8h14.17c1.57,0,2.83-1.27,2.83-2.83Z"/>
+    <path id="Part_Feature322_f0005" data-name="Part  Feature322 f0005" class="cls-1" d="M4.25,6.8C1.9,6.8,0,8.71,0,11.06H0C0,8.71,1.9,6.8,4.25,6.8h0Z"/>
+    <path id="Part_Feature322_f0006" data-name="Part  Feature322 f0006" class="cls-1" d="M24.09,0c-1.57,0-2.83,1.27-2.83,2.83h0C21.26,1.27,22.53,0,24.09,0h0Z"/>
+    <path id="Part_Feature322_f0007" data-name="Part  Feature322 f0007" class="cls-1" d="M0,59.24H0V11.06H0v48.19Z"/>
+    <path id="Part_Feature322_f0008" data-name="Part  Feature322 f0008" class="cls-1" d="M24.09,0h100.63H24.09Z"/>
+    <path id="Part_Feature322_f0009" data-name="Part  Feature322 f0009" class="cls-1" d="M0,59.24c0,2.35,1.9,4.25,4.25,4.25h0C1.9,63.5,0,61.59,0,59.24H0Z"/>
+    <path id="Part_Feature322_f0010" data-name="Part  Feature322 f0010" class="cls-1" d="M127.56,2.84C127.56,1.27,126.29,0,124.72,0h0c1.57,0,2.83,1.27,2.83,2.83h0Z"/>
+    <path id="Part_Feature322_f0011" data-name="Part  Feature322 f0011" class="cls-1" d="M18.43,63.5H4.25h14.17Z"/>
+    <path id="Part_Feature322_f0012" data-name="Part  Feature322 f0012" class="cls-1" d="M127.56,2.84h0v1.13h0v-1.13Z"/>
+    <path id="Part_Feature322_f0013" data-name="Part  Feature322 f0013" class="cls-1" d="M21.26,66.33h0c0-1.57-1.27-2.83-2.83-2.83h0c1.57,0,2.83,1.27,2.83,2.83Z"/>
+    <path id="Part_Feature322_f0014" data-name="Part  Feature322 f0014" class="cls-1" d="M127.56,3.97h0c0,1.57,1.27,2.83,2.83,2.83h0c-1.57,0-2.83-1.27-2.83-2.83Z"/>
+    <path id="Part_Feature322_f0015" data-name="Part  Feature322 f0015" class="cls-1" d="M21.26,67.47h0v-1.13h0v1.13Z"/>
+    <path id="Part_Feature322_f0016" data-name="Part  Feature322 f0016" class="cls-1" d="M130.39,6.8h21.26-21.26Z"/>
+    <path id="Part_Feature322_f0017" data-name="Part  Feature322 f0017" class="cls-1" d="M21.26,67.47c0,1.57,1.27,2.83,2.83,2.83h0c-1.57,0-2.83-1.27-2.83-2.83h0Z"/>
+    <path id="Part_Feature322_f0018" data-name="Part  Feature322 f0018" class="cls-1" d="M155.91,11.06c0-2.35-1.9-4.25-4.25-4.25h0c2.35,0,4.25,1.9,4.25,4.25h0Z"/>
+    <path id="Part_Feature322_f0019" data-name="Part  Feature322 f0019" class="cls-1" d="M124.72,70.3H24.09h100.63Z"/>
+    <path id="Part_Feature322_f0020" data-name="Part  Feature322 f0020" class="cls-1" d="M155.91,11.06h0v48.19h0V11.06Z"/>
+    <path id="Part_Feature322_f0021" data-name="Part  Feature322 f0021" class="cls-1" d="M124.72,70.3c1.57,0,2.83-1.27,2.83-2.83h0c0,1.57-1.27,2.83-2.83,2.83h0Z"/>
+    <path id="Part_Feature322_f0022" data-name="Part  Feature322 f0022" class="cls-1" d="M151.65,63.5c2.35,0,4.25-1.9,4.25-4.25h0c0,2.35-1.9,4.25-4.25,4.25h0Z"/>
+    <path id="Part_Feature322_f0023" data-name="Part  Feature322 f0023" class="cls-1" d="M127.56,66.33h0v1.13h0v-1.13Z"/>
+    <path id="Part_Feature322_f0024" data-name="Part  Feature322 f0024" class="cls-1" d="M151.65,63.5h-21.26,21.26Z"/>
+    <path id="Part_Feature322_f0025" data-name="Part  Feature322 f0025" class="cls-1" d="M130.39,63.5h0c-1.57,0-2.83,1.27-2.83,2.83h0c0-1.57,1.27-2.83,2.83-2.83Z"/>
+  </g>
+</svg>
