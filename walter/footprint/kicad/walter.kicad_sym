@@ -23,7 +23,7 @@
         (name "~{RESET}" (effects (font (size 1.27 1.27))))
         (number "1" (effects (font (size 1.27 1.27))))
       )
-      (pin input line (at -12.7 -7.62 0) (length 2.54)
+      (pin bidirectional line (at -12.7 -7.62 0) (length 2.54)
         (name "IO40" (effects (font (size 1.27 1.27))))
         (number "10" (effects (font (size 1.27 1.27))))
       )
