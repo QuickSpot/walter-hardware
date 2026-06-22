@@ -5,13 +5,9 @@
 \usepackage{graphicx}						%use images
 \usepackage{textcomp}						%used for textdegree command
 \usepackage[hidelinks]{hyperref}            %used for clickable references
-\usepackage{draftwatermark}
-\SetWatermarkLightness{ 0.9 }
-\SetWatermarkText{Preliminary}
-\SetWatermarkScale{ 4 }
 
 %DPTECHNICS datasheet variables
-\newcommand{\dptproduct}{Walter - WiFi/BLE/NB-IoT/LTE-M module}
+\newcommand{\dptproduct}{Walter - WiFi/BLE/NB-IoT/LTE-M/GNSS module}
 
 \newcommand{\textoverline}[1]{$\overline{\mbox{#1}}$}
 
@@ -21,7 +17,7 @@
 \fancyfoot{}
 \fancyhead[LO,LE]{ {\bf \dptproduct}}
 \fancyfoot[R]{\thepage}
-\fancyfoot[L]{QuickSpot - 2023}
+\fancyfoot[L]{QuickSpot - A brand of DPTechnics BV}
 \renewcommand{\footrulewidth}{0.4pt}
 \renewcommand\familydefault{\sfdefault}
 \setlength{\parindent}{0pt}
@@ -32,15 +28,20 @@
 
 \hfill {\bf \Large  \dptproduct}\\[-3mm]
 
-\hfill {\Large Preliminary Datasheet}
+\hfill {\Large Datasheet} \\[4cm]
+
+
+\begin{center}
+ \includegraphics[height=11cm]{intro-image.jpg}
+\end{center}
 
 \vfill
 \rule{487pt}{1pt}
 
-\hfill Revision 0.4 - \today
+\hfill Revision 0.9 - \today
 \end{titlepage}
 \section{General information}
-Walter is an ESP32-S3 based IoT board that offers WiFi, Bluetooth 5 (LE), cellular CAT M1/NB1/NB2 and GNSS connectivity. 
+Walter is a small-form-factor IoT system-on-module (SoM) that combines a powerful ESP32-S3 system-on-chip (SoC) with a second-generation Sequans GM02SP LTE-M/NB-IoT 5G modem and GNSS receiver. Its ESP32-S3 provides many built-in peripherals as well, including UART, SPI, I²C, CAN, Wi-Fi b/g/n, and Bluetooth 5.
 
 \section{Features}
 Walter is based on an ESP32-S3-WROOM-1-N16R2 module with an on-board Sequans GM02SP modem.
@@ -53,7 +54,11 @@ This combination makes Walter a unique development board that offers a rich feat
 	\item LTE: CAT M1/NB1/NB2 (GM02SP module)
 	\item GPS: GPS, GNSS Constellation support (GM02SP module)
 	\item Bluetooth: 2Mbps Bluetooth 5 (LE), Bluetooth Mesh
-	\item 24 physical GPIO pins 
+	\item 24 physical GPIO pins
+	\item Ultra low deep sleep current of 9.8\textmu A
+	\item Open source software support for ESP-IDF, Arduino, Micropython and Toit
+	\item Certified for CE, FCC, IC, UKCA, New-Zealand and Australia
+	\item Solderless integration into any project due to the 2.54mm pin headers
 \end{itemize}
 
 \section{Electrical characteristics}
@@ -71,7 +76,9 @@ Digital I/O Voltage & V & 2.64 & 3.3 & 3.6 \\
 \hline
 Power consumption @3.3V & A & -- & -- & 1.5 \\
 \hline
-3.3V output & A & -- & -- & 0.25 \\
+3.3V output current & A & -- & -- & 0.25 \\
+\hline
+Deep sleep current & \textmu A & -- & 9.8 & -- \\
 \hline
 \end{tabular}
 \end{center}
@@ -277,7 +284,7 @@ The Sequans GM02SP module has 3 hardware UART interfaces. Only UART0 is connecte
 	\item UART2 (115200@8N1 no HW handshaking): console log output.
 \end{itemize}
 
-Please note that any UART host should be connected as follows:
+Please not that any UART host should be connected as follows:
 \begin{itemize}
 	\item \verb+RX <-> RX+
 	\item \verb+TX <-> TX+
@@ -289,9 +296,12 @@ Please note that any UART host should be connected as follows:
 \subsubsection{Power Input}
 Walter can be powered either by connecting a USB-C cable or via the VIN pin (see pinout \ref{external_pins}).\\
 
-\textbf{DO NOT} power Walter with both the USB-C connection and the VIN-pin! This can lead to seriously damaging the board and external peripherals connected to it!
+\textbf{DO NOT} power Walter with both the USB-C connection and the VIN-pin! This can lead to seriously damaging the board and external peripherals connected to it! To minimize losses the USB-C power input and Vin input pin are directly connected to each other. If you want to debug your application through USB-C while Walter is plugged into a carrier board we advise you to modify a USB-C cable by cutting the power lead. 
+
+
 \subsubsection{Power Output}
-Walter contains a Texas Instruments LM3281YFQR DC-DC Converter which takes power from either the USB-C port or the VIN-pin and converts it to a regulated +3.3VDC supply.
+Walter contains a Texas Instruments TPS6208833 DC-DC Converter which takes power from either the USB-C port or the VIN-pin and converts it to a regulated +3.3VDC supply. The maximum load on the 3.3VDC output is 250mA. 
+
 \subsubsection{Power Consumption}
 \subsection{GPIO} \label{gpio}
 All GPIO pins exposed via the physical pin headers on Walter are 3.3V resistant. If you want to connect 5V or other forms of logic, please use a suitable logic level converter or voltage divider.\\
@@ -310,8 +320,19 @@ Please reference the corresponding datasheets for all minimum, maximum and typic
 
 \section{Software}
 \subsection{Libraries and frameworks from QuickSpot}
-Walter comes without firmware out of the box. You can easily program and upload your own firmware for Walter using MicroPython, Arduino, ESP-IDF... 
-Please refer to the "Getting Started with Walter" available on our GitHub to get you up and running fast.
+
+Every Walter comes pre-flashed with an example application. This demonstration firmware requires the LTE and GNSS antennas to be connected and performs the following tasks: 
+
+\begin{enumerate}
+    \item Configure the modem for LTE-M connectivity with the network-pushed APN.
+    \item Check and update the GNSS assistance data if required.
+    \item Try to establish a GNSS fix. The firmware attempts this up to 5 times, with a maximum duration of approximately 66 seconds per attempt.
+    \item Upload the data to the \href{https://walterdemo.quickspot.io}{walterdemo.quickspot.io} portal.
+\end{enumerate}
+
+To use this pre-flashed demonstrator, install the LTE and GNSS antennas and insert a SIM card that supports LTE-M. Make sure the GNSS antenna has a clear view of the sky and allow Walter about 10 minutes to connect and upload its first message. Every Walter identifies itself using the MAC address printed on the bag in which it was shipped. \\
+
+If you do not want to upload your position to the public \href{https://walterdemo.quickspot.io}{walterdemo.quickspot.io} platform, or if you want to run your own code, which is what Walter is designed for, you can flash your own firmware. You can easily program and upload your own firmware for Walter using Arduino, ESP-IDF, MicroPython or Zephyr. Please refer to the "Getting Started with Walter" guide available on our GitHub to get you up and running fast.
 
 \subsection{AT commands}
 
@@ -351,16 +372,133 @@ Storage humidity & \%RH & 5 & & 90 \\
 \end{center}
 Please note that no condensation may occur on the PCB and components. 
 
+\section{Soldering profile}
+The Walter module can be reflow soldered with a low temperature profile. 
+
+\section{Prohibited Use and Resale Statement}
+This electronics manual serves as a legal document outlining the terms of use and resale of the electronics herein described. By accessing, using, or reselling these electronics, you agree to abide by the terms outlined herein.
+
+\subsection{Prohibition on Resale to Third Countries}
+Users of these electronics are strictly prohibited from reselling them to third countries listed under the Export Control Classification Number (ECCN) or mentioned in Section 2.903 of the Federal Communications Commission (FCC) rules. Any such resale is considered a violation of export control regulations and may result in legal consequences.
+
+\subsection{Prohibition on Military Use}
+These electronics may not be used for military purposes without the prior written consent of the manufacturer. Any unauthorized use for military applications is strictly prohibited and may result in legal action.
+
+\subsection{Compliance with Applicable Local Laws}
+Users of these electronics are obligated to comply with all applicable local laws and regulations. This includes but is not limited to Section 5301 of the Anti-Drug Abuse Act of 1988, 21 U.S.C. 862. Any use of these electronics for purposes contrary to local law is strictly prohibited.
+
+\subsection{Manufacturer's Liability}
+The manufacturer holds no liability for any misuse or unauthorized use of these electronics. Users assume full responsibility for their actions and agree to indemnify and hold harmless the manufacturer from any claims, damages, or liabilities arising from such misuse.
+
+\section{Certification}
+Walter has the following certifications:
+\begin{itemize}
+	\item FCC: 2BDGUWALTER
+	\item ISED: Contains 21098-ESPS3WROOM1 and 12732A-GM02SA
+	\item CE: European Economic Area
+	\item UKCA: Great Britain
+	\item RCM: New Zealand and Australia
+\end{itemize}
+
+\subsection{Federal Communication Commission Interference Statement}
+This device complies with Part 15 of the FCC Rules. Operation is subject to the following two conditions:
+\begin{enumerate} 
+	\item This device may not cause harmful interference.
+	\item This device must accept any interference received, including interference that may cause undesired operation.
+\end{enumerate}
+
+{\bf CAUTION}: Changes or modifications not expressly approved by the party responsible for compliance could void the user’s authority to operate the equipment. \\
+
+{\bf NOTE}: This equipment has been tested and found to comply with the limits for a Class B digital device, pursuant to Part 15 of the FCC Rules. These limits are designed to provide reasonable protection against harmful interference in a residential installation. This equipment generates, uses and can radiate radio frequency energy and, if not installed and used in accordance with the instructions, may cause harmful interference to radio communications. However, there is no guarantee that interference will not occur in a particular installation. If this equipment does cause harmful interference to radio or television reception, which can be determined by turning the equipment off and on, the user is encouraged to try to correct the interference by one or more of the following measures:
+\begin{itemize}
+	\item Reorient or relocate the receiving antenna.
+	\item Increase the separation between the equipment and receiver.
+	\item Connect the equipment into an outlet on a circuit different from that to which the receiver is connected.
+	\item Consult the dealer or an experienced radio/TV technician for help.
+\end{itemize}
+\subsection{RF warning statement}
+To comply with FCC RF exposure compliance requirements, the antennas used for this transmitter must be installed to provide a separation distance of at least 20 cm from all persons and must not be co–located or operating in conjunction with any other antenna or transmitter.
+
+\subsection{OEM integrator conditions}
+This device is intended only for OEM integrators under the following conditions:
+\begin{enumerate}
+	\item The antenna must be installed such that 20 cm is maintained between the antenna and users.
+	\item The transmitter module may not be co–located with any other transmitter or antenna.
+\end{enumerate}
+
+As long as the two conditions above are met, further transmitter tests will not be required. However, the OEM integrator is still responsible for testing their end–product for any additional compliance requirements required with this module installed. To ensure compliance with all non–transmitter functions the host manufacturer is responsible for ensuring compliance with the module(s) installed and fully operational. For example, if a host  was previously authorized as an unintentional radiator under the Declaration of Conformity procedure without a 
+transmitter certified module and a module is added, the host manufacturer is responsible for ensuring that after the module is installed and operational the host continues to be compliant with the Part 15B unintentional radiator requirements.\\
+
+The module is limited to OEM installation only. The module is limited to installation in a fixed application. We hereby acknowledge our responsibility to provide guidance to the host manufacturer in the event that they require assistance for ensuring compliance with the Part 15 Subpart B requirements.\\
+
+{\bf IMPORTANT NOTE}: In the event that these conditions cannot be met (for example certain laptop configurations or co–location with another transmitter), then the FCC authorization is no longer considered valid and the FCC ID cannot be used on the final product. In these circumstances, the OEM integrator will be responsible for re–evaluating the end product (including the transmitter) and obtaining a separate FCC authorization. 
+
+\subsection{Antennas}
+The maximum LTE antenna gain values (accounting for cable attenuation) to comply with the FCC maximum ERP/EIRP limits and with RF Exposure rules:
+\begin{itemize}
+	\item LTE band 2 (1900 PCS): 8.0 dBi
+	\item LTE band 4 (AWS-1): 5.0 dBi
+	\item LTE band 5 (850): 9.4 dBi
+	\item LTE band 12 (700a): 8.6 dBi
+	\item LTE band 13 (700c): 9.1 dBi
+	\item LTE band 17 (700b): 8.7 dBi
+	\item LTE band 25 (1900+): 8.0 dBi
+	\item LTE band 66 (AWS-3): 5.0 dBi
+\end{itemize}
+
+An example of an approved LTE antenna is the Taoglas FXUB63.07.0150C. \\
+
+
+An example of an approved GNSS antenna is the Taoglas FXP611.07.0092C.
+
+\subsection{Limited module procecures}
+Not applicable
+
+\subsection{Trace antenna designs}
+Not applicable
+
+\subsection{End product labelling}
+This transmitter module is authorized only for use in device where the antenna may be installed such that 20 cm must be maintained between the antenna and users. The final end product must be labelled in a visible area with the following: “Contains FCC ID: 2BDGUWALTER”. The grantee’s FCC ID can be used only when all FCC compliance requirements are met. The following FCC part 15.19 statement has to also be available on the label:
+
+\begin{verbatim}
+This device complies with Part 15 of FCC rules. Operation is subject to the
+following two conditions:
+1. this device may not cause harmful interference and
+2. this device must accept any interference received,
+   including interference that may cause undesired operation.
+\end{verbatim}
+
+\subsection{Manual information to the end user}
+The OEM integrator has to be aware not to provide information to the end user regarding how to install or remove this RF module in the user’s manual of the end product which integrates this module. In the user manual of the end product, the end user has to be informed that the equipment complies with FCC radio–frequency exposure guidelines set forth for an uncontrolled environment. The end user has to also be informed that any changes or modifications not expressly approved by the manufacturer could void the user’s authority to operate this equipment. The end user manual shall include all required regulatory information/warning as show in this manual. The maximum operating ambient temperature of the equipment declared by the manufacturer is -40\textdegree C to +85\textdegree C.
+
+\section{Orderable part numbers}
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+{\bf Part number} & {\bf Description} & {\bf HS} & {\bf JPHTS} & {\bf ECCN} \\
+\hline
+\hline
+P000000100 & 16MiB Flash, 2MiB PSRAM, PCB antenna & 851762 & 851762090 & 5A992.C \\
+\hline
+P000000118 & 16MiB Flash, 8MiB PSRAM, PCB antenna & 851762 & 851762090 & 5A992.C \\
+\hline
+P000000119 & 16MiB Flash, 8MiB PSRAM, u.FL WiFi/BLE & 851762 & 851762090 & 5A992.C \\
+\hline
+\end{tabular}
+\end{center}
 
 \section{Legal information}
-This module is distributed worldwide by DPTechnics bv. We are not responsible for any product this module is part of. This datasheet is made with great care for detail but it can be possible the datasheet will be updated with more accurate data in te future. Users of DPTechnics bv products can contact us by letter, telephone or email. \\
+This module is manufactured by DPTechnics bv. We are not responsible for any product this module is part of. This datasheet is made with great care for detail but it is possible the datasheet will be updated with more accurate data in te future. Users of DPTechnics bv products can contact us by letter, telephone or email. For inquiries regarding the permissible use, resale, or any other questions related to these electronics, please contact the manufacturer. By using or reselling these electronics, you acknowledge that you have read and understood the terms outlined in this manual and agree to fully comply with them.\\
 
 \noindent DPTechnics bv\\
 Westkapellestraat 396/44\\
 8300 Knokke-Heist\\
 Belgium\\
 
+VAT No: BE0682 598 007\\
+
 \noindent Tel: +32(0)50 62 13 79\\
-email: info@quickspot.io\\
-web: https://www.quickspot.io
+Email: info@quickspot.io\\
+Web: https://www.quickspot.io
 \end{document}
