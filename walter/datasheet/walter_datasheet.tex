@@ -5,6 +5,9 @@
 \usepackage{graphicx}						%use images
 \usepackage{textcomp}						%used for textdegree command
 \usepackage[hidelinks]{hyperref}            %used for clickable references
+\usepackage{pgfplots}
+\usepackage{tikz}
+\pgfplotsset{compat=1.18}
 
 %DPTECHNICS datasheet variables
 \newcommand{\dptproduct}{Walter - WiFi/BLE/NB-IoT/LTE-M/GNSS module}
@@ -38,7 +41,7 @@
 \vfill
 \rule{487pt}{1pt}
 
-\hfill Revision 0.9 - \today
+\hfill Revision 1.0 - \today
 \end{titlepage}
 \section{General information}
 Walter is a small-form-factor IoT system-on-module (SoM) that combines a powerful ESP32-S3 system-on-chip (SoC) with a second-generation Sequans GM02SP LTE-M/NB-IoT 5G modem and GNSS receiver. Its ESP32-S3 provides many built-in peripherals as well, including UART, SPI, I²C, CAN, Wi-Fi b/g/n, and Bluetooth 5.
@@ -270,7 +273,7 @@ Walter contains 22 testpoints on the bottom of the board that serve multiple pur
     \centering
     \includegraphics[height=8cm]{walter-testpoints-named.pdf}
     \caption{Bottom view of the Walter testpoints with their connection names.}
-    \label{fig:testpoints}
+    \label{fig:testpointsnamed}
 \end{figure}
 
 \subsubsection{Others}
@@ -372,8 +375,181 @@ Storage humidity & \%RH & 5 & & 90 \\
 \end{center}
 Please note that no condensation may occur on the PCB and components. 
 
-\section{Soldering profile}
-The Walter module can be reflow soldered with a low temperature profile. 
+\section{Manufacturing information: soldering and MSL}
+The Walter module can be assembled using either a reflow soldering process with pin-in-paste technology or a wave soldering process.\\
+
+When the module is subjected to reflow soldering, it shall be handled in accordance with Moisture Sensitivity Level 3 (MSL 3) requirements. MSL handling is not required for wave soldering processes in which the module body temperature remains below 125$^\circ$C.\\
+
+For reflow soldering, the profile shown in Figure~\ref{fig:reflow-profile} is recommended. This profile is suitable for use with SAC305 lead-free solder paste.
+
+\begin{figure}[htbp]
+    \centering
+
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.95\textwidth,
+        height=0.55\textwidth,
+        xmin=0,
+        xmax=360,
+        ymin=20,
+        ymax=260,
+        xlabel={Time [s]},
+        ylabel={Temperature [$^\circ$C]},
+        xtick={0,60,120,180,240,300,360},
+        ytick={25,50,100,150,180,200,217,240,260},
+        grid=major,
+        grid style={gray!20},
+        axis line style={black!70},
+        tick style={black!70},
+        legend style={
+            at={(0.03,0.58)},
+            anchor=west,
+            draw=none,
+            fill=white,
+            font=\small
+        },
+        clip=false
+    ]
+
+    % --------------------------------------------------------
+    % Target reflow profile
+    % --------------------------------------------------------
+    \addplot[
+        very thick,
+        smooth
+    ]
+    coordinates {
+        (0,25)
+        (60,85)
+        (120,150)
+        (180,180)
+        (205,200)
+        (220,217)
+        (240,233)
+        (252,240)
+        (264,238)
+        (280,225)
+        (288,217)
+        (310,160)
+        (330,100)
+        (360,50)
+    };
+
+    \addlegendentry{Target reflow profile}
+
+    % --------------------------------------------------------
+    % SAC305 liquidus
+    % --------------------------------------------------------
+    \addplot[
+        dashed,
+        thick
+    ]
+    coordinates {
+        (0,217)
+        (360,217)
+    };
+
+    \node[
+        anchor=north east,
+        font=\small,
+        fill=white,
+        inner sep=2pt,
+        yshift=-3pt
+    ] at (axis cs:352,217)
+    {SAC305 liquidus: 217\,°C};
+
+    % --------------------------------------------------------
+    % Maximum package body temperature
+    % --------------------------------------------------------
+    \addplot[
+        dashed,
+        very thick
+    ]
+    coordinates {
+        (0,245)
+        (360,245)
+    };
+
+    \node[
+        anchor=south east,
+        font=\small\bfseries,
+        fill=white,
+        inner sep=2pt,
+        yshift=2pt
+    ] at (axis cs:352,245)
+    {Maximum body temperature: 245\,°C};
+
+    % --------------------------------------------------------
+    % Peak temperature marker
+    % --------------------------------------------------------
+    \addplot[
+        only marks,
+        mark=*,
+        mark size=2.5pt
+    ]
+    coordinates {
+        (252,240)
+    };
+
+    \node[
+        anchor=north east,
+        font=\small,
+        fill=white,
+        inner sep=2pt,
+        xshift=-4pt,
+        yshift=-6pt
+    ] at (axis cs:252,240)
+    {Target peak: 240\,°C};
+
+    % --------------------------------------------------------
+    % Time above liquidus
+    % --------------------------------------------------------
+    \draw[
+        <->,
+        thick
+    ]
+    (axis cs:220,198)
+    --
+    (axis cs:288,198);
+
+    \node[
+        anchor=north,
+        font=\small,
+        fill=white,
+        inner sep=1pt,
+        yshift=-2pt
+    ] at (axis cs:254,198)
+    {Time above 217\,°C $\approx$ 68 s};
+
+    % --------------------------------------------------------
+    % Soak region
+    % --------------------------------------------------------
+    \draw[
+        <->,
+        thick
+    ]
+    (axis cs:120,140)
+    --
+    (axis cs:180,140);
+
+    \node[
+        anchor=north,
+        font=\small,
+        fill=white,
+        inner sep=1pt,
+        yshift=-2pt
+    ] at (axis cs:150,140)
+    {Soak region};
+
+    \end{axis}
+    \end{tikzpicture}
+
+    \caption{
+        Recommended lead-free reflow profile for the Walter module.
+    }
+
+    \label{fig:reflow-profile}
+\end{figure}
 
 \section{Prohibited Use and Resale Statement}
 This electronics manual serves as a legal document outlining the terms of use and resale of the electronics herein described. By accessing, using, or reselling these electronics, you agree to abide by the terms outlined herein.
@@ -434,7 +610,7 @@ The module is limited to OEM installation only. The module is limited to install
 {\bf IMPORTANT NOTE}: In the event that these conditions cannot be met (for example certain laptop configurations or co–location with another transmitter), then the FCC authorization is no longer considered valid and the FCC ID cannot be used on the final product. In these circumstances, the OEM integrator will be responsible for re–evaluating the end product (including the transmitter) and obtaining a separate FCC authorization. 
 
 \subsection{Antennas}
-The maximum LTE antenna gain values (accounting for cable attenuation) to comply with the FCC maximum ERP/EIRP limits and with RF Exposure rules:
+The maximum LTE antenna gain values (accounting for cable attenuation) to comply with the FCC and RED maximum ERP/EIRP limits and with RF Exposure rules:
 \begin{itemize}
 	\item LTE band 2 (1900 PCS): 8.0 dBi
 	\item LTE band 4 (AWS-1): 5.0 dBi
