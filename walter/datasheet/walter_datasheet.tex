@@ -3,8 +3,14 @@
 \usepackage[margin=2cm, a4paper]{geometry}	%2cm page margin
 \usepackage{fancyhdr}						%use fancy headers
 \usepackage{graphicx}						%use images
+\usepackage{float}							%[H] float placement
 \usepackage{textcomp}						%used for textdegree command
 \usepackage[hidelinks]{hyperref}            %used for clickable references
+\urlstyle{same}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{patterns,arrows.meta}
+\pgfplotsset{compat=1.18}
 
 %DPTECHNICS datasheet variables
 \newcommand{\dptproduct}{Walter - WiFi/BLE/NB-IoT/LTE-M/GNSS module}
@@ -38,52 +44,61 @@
 \vfill
 \rule{487pt}{1pt}
 
-\hfill Revision 0.9 - \today
+\hfill Revision 1.1 - \today
 \end{titlepage}
 \section{General information}
 Walter is a small-form-factor IoT system-on-module (SoM) that combines a powerful ESP32-S3 system-on-chip (SoC) with a second-generation Sequans GM02SP LTE-M/NB-IoT 5G modem and GNSS receiver. Its ESP32-S3 provides many built-in peripherals as well, including UART, SPI, I²C, CAN, Wi-Fi b/g/n, and Bluetooth 5.
 
 \section{Features}
-Walter is based on an ESP32-S3-WROOM-1-N16R2 module with an on-board Sequans GM02SP modem.
+The default version of Walter is based on an ESP32-S3-WROOM-1-N16R2 module (16MB flash, 2MB PSRAM, PCB antenna) with an on-board Sequans GM02SP modem. Versions with 8MB PSRAM and/or a u.FL connector for an external WiFi/BLE antenna are optional and available through direct ordering (see section \ref{orderable_parts}).
 This combination makes Walter a unique development board that offers a rich feature-set which include but is not limited to:
 \begin{itemize}
 	\item CPU: Xtensa Dual-core 32-bit LX7 CPU (ESP32-S3 SoC)
-	\item RAM: 2MB (Quad SPI) PSRAM
+	\item RAM: 2MB (Quad SPI) PSRAM, 8MB (Octal SPI) PSRAM optional
 	\item Flash: 16MB (Quad SPI) Flash memory
-	\item WiFi: 150Mbps(n) 802.11 WiFi b/g/n with on-board antenna
+	\item WiFi: 150Mbps(n) 802.11 WiFi b/g/n with on-board PCB antenna, u.FL connector optional
 	\item LTE: CAT M1/NB1/NB2 (GM02SP module)
 	\item GPS: GPS, GNSS Constellation support (GM02SP module)
 	\item Bluetooth: 2Mbps Bluetooth 5 (LE), Bluetooth Mesh
 	\item 24 physical GPIO pins
-	\item Ultra low deep sleep current of 9.8\textmu A
+	\item Ultra low deep sleep current of 9.5\textmu A
 	\item Open source software support for ESP-IDF, Arduino, Micropython and Toit
-	\item Certified for CE, FCC, IC, UKCA, New-Zealand and Australia
+	\item Certified for CE, FCC, IC, UKCA, New-Zealand and Australia, and approved by Verizon
 	\item Solderless integration into any project due to the 2.54mm pin headers
 \end{itemize}
 
 \section{Electrical characteristics}
-For the most reliable use and stability of the module we advice to use the typical ratings. We do not guarantee the correct functioning of the device outsite the minimum and maxium range of the module. 
+For the most reliable use and stability of the module we advise to use the typical ratings. We do not guarantee the correct functioning of the device outside the minimum and maximum range of the module.
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|p{5cm}|c|c|c|c|}
+\begin{tabular}{|p{5.7cm}|c|c|c|c|}
 \hline
 {\bf Parameter} & {\bf Units} & {\bf Minimum rating} & {\bf Typical rating} & {\bf Maximum rating} \\
 \hline
 \hline
-DC Supply Voltage & V & 3.0 & 5.0 & 5.5 \\
+Supply voltage VIN, functional & V & 3.0 & 5.0 & 5.5\textsuperscript{3} \\
 \hline
-Digital I/O Voltage & V & 2.64 & 3.3 & 3.6 \\
+Supply voltage VIN, recommended & V & 3.3 & 5.0 & 5.5\textsuperscript{3} \\
 \hline
-Power consumption @3.3V & A & -- & -- & 1.5 \\
+Digital I/O voltage & V & 2.64 & 3.3 & 3.6 \\
 \hline
-3.3V output current & A & -- & -- & 0.25 \\
+Peak input current @ VIN = 3.0V\textsuperscript{1} & A & -- & -- & 1.5 \\
 \hline
-Deep sleep current & \textmu A & -- & 9.8 & -- \\
+Peak input current @ VIN = 5.0V\textsuperscript{1} & A & -- & -- & 1.0 \\
+\hline
+3V3 OUT output current & A & -- & -- & 0.25 \\
+\hline
+3V3 OUT capacitive load & \textmu F & -- & -- & 1 \\
+\hline
+Deep sleep current\textsuperscript{2} & \textmu A & -- & 9.5 & -- \\
 \hline
 \end{tabular}
 \end{center}
 
-\newpage
+{\small \textsuperscript{1} Worst case with LTE transmitting at 23dBm, WiFi transmitting and 250mA drawn from 3V3 OUT at the same time, including a 20\% margin. Use these values to size the power supply. Typical values are given in section \ref{power_consumption}.\\
+\textsuperscript{2} Measured at VIN = 5.0V with the modem in PSM.\\
+\textsuperscript{3} 5.5V is also the absolute maximum rating of VIN. VIN must never exceed 5.5V, not even during transients. See section \ref{power_input} for details.}
+
 \section{Interfaces}
 Walter provides a total of 28 physical pins (3 power, 1 strapping pin and 24 I/O pins) to interface with external parts. This chapter provides information about these pins as well as internally connected pins and the testpoints located at the bottom of the board.\\
 
@@ -117,7 +132,7 @@ The order of this table, in reference to the board, is top to bottom and left to
 \hline
 3 & IO43/TX0 & TXD0 & bidirectional & ESP32 UART0 Transmit \\
 \hline
-4 & \textoverline{DFU}/\textoverline{3V3\_EN} & IO0 & bidirectional & DFU when low on boot and 3V3 output enable \\
+4 & \textoverline{DFU}/\textoverline{3V3\_EN} & IO0 & bidirectional & DFU when low on boot, 3V3 OUT on when low \\
 \hline
 5 & IO12 & IO12 & bidirectional & General purpose I/O \\
 \hline
@@ -161,11 +176,11 @@ The order of this table, in reference to the board, is top to bottom and left to
 \hline
 25 & IO10 & IO10 & bidirectional & General purpose I/O \\
 \hline
-26 & 3V3 OUT & N/A & power output & Switchable 3.3VDC output \\
+26 & 3V3 OUT & N/A & power output & Switchable 3.3VDC output (see \ref{power_output}) \\
 \hline
 27 & GND & GND & power ground & GND connection \\
 \hline
-28 & VIN & N/A & power input & DC Power input port\\
+28 & VIN & N/A & power input & DC Power input port (see \ref{power_input})\\
 \hline
 \end{tabular}
 \caption{\label{table_exteral_pin}Walter pin definitions}
@@ -203,7 +218,6 @@ Table \ref{table_interal_pin} contains the pin descriptions of the internally co
     \caption{\label{table_interal_pin}Walter Internal Pin Definitions}
 \end{table}
 
-\newpage
 \subsubsection{Testpoints} \label{testpoints}
 Walter contains 22 testpoints on the bottom of the board that serve multiple purposes. You can use these pins for debugging, interfacing and/or flashing of the Sequans GM02SP and the ESP32-S3-WROOM module.
 \begin{figure}[h]
@@ -270,7 +284,7 @@ Walter contains 22 testpoints on the bottom of the board that serve multiple pur
     \centering
     \includegraphics[height=8cm]{walter-testpoints-named.pdf}
     \caption{Bottom view of the Walter testpoints with their connection names.}
-    \label{fig:testpoints}
+    \label{fig:testpointsnamed}
 \end{figure}
 
 \subsubsection{Others}
@@ -284,7 +298,7 @@ The Sequans GM02SP module has 3 hardware UART interfaces. Only UART0 is connecte
 	\item UART2 (115200@8N1 no HW handshaking): console log output.
 \end{itemize}
 
-Please not that any UART host should be connected as follows:
+Please note that any UART host should be connected as follows:
 \begin{itemize}
 	\item \verb+RX <-> RX+
 	\item \verb+TX <-> TX+
@@ -293,29 +307,257 @@ Please not that any UART host should be connected as follows:
 \end{itemize}
 \section{Electrical and RF Characteristics} \label{power_rf_characteristics}
 \subsection{Power} \label{power}
-\subsubsection{Power Input}
-Walter can be powered either by connecting a USB-C cable or via the VIN pin (see pinout \ref{external_pins}).\\
+\subsubsection{Power Input} \label{power_input}
+Walter can be powered either by connecting a USB-C cable or via the VIN pin (see pinout \ref{external_pins}). VIN accepts 3.0V to 5.5V. Everything on Walter works down to 3.0V, but radio performance is best between 3.3V and 5.5V, so we recommend that range for your design. Below 3.3V the DC-DC converter runs at 100\% duty cycle and the internal 3.3V rail follows VIN. The default brownout level of the ESP32-S3 is 2.44V.\\
 
-\textbf{DO NOT} power Walter with both the USB-C connection and the VIN-pin! This can lead to seriously damaging the board and external peripherals connected to it! To minimize losses the USB-C power input and Vin input pin are directly connected to each other. If you want to debug your application through USB-C while Walter is plugged into a carrier board we advise you to modify a USB-C cable by cutting the power lead. 
+The Sequans GM02SP modem is powered directly from VIN. Only the ESP32-S3 and the 3V3 OUT pin are powered through the DC-DC converter (see section \ref{power_output}). This is why the peak input current rises when VIN drops (see section \ref{power_consumption}).
 
+\paragraph{Protection}
+Walter has no overvoltage, surge or reverse polarity protection on VIN. The maximum VIN of 5.5V is also the absolute maximum rating of the modem supply, so VIN must never exceed 5.5V, including spikes caused by hot plugging, long supply cables or inductive loads. A standard TVS diode for 5V lines clamps well above 5.5V and is not sufficient on its own. When VIN comes from an unregulated or external source, place a regulator or an overvoltage protection switch in front of Walter. Add reverse polarity protection when the supply can be connected the wrong way round.
 
-\subsubsection{Power Output}
-Walter contains a Texas Instruments TPS6208833 DC-DC Converter which takes power from either the USB-C port or the VIN-pin and converts it to a regulated +3.3VDC supply. The maximum load on the 3.3VDC output is 250mA. 
+\paragraph{Bulk capacitance}
+Place at least 2 $\times$ 10\textmu F 0603 ceramic capacitors (X5R or X7R) as close as possible to the VIN pin on the carrier board. They supply the current peaks during LTE transmission.
 
-\subsubsection{Power Consumption}
+\paragraph{USB-C and VIN}
+To minimize losses, the VBUS line of the USB-C connector and the VIN pin are directly connected to each other on Walter, without a diode. A voltage on one of them is therefore always present on the other:
+\begin{itemize}
+	\item When Walter is powered through USB-C, the 5V of the USB port is present on the VIN pin and feeds into the carrier board.
+	\item When Walter is powered through VIN, the carrier supply is present on the USB-C connector and feeds into the USB port of the connected computer.
+\end{itemize}
+
+\textbf{DO NOT} connect a regular USB-C cable while the carrier board powers Walter through VIN, unless the carrier board is designed for it as described below. This can lead to seriously damaging the board, the computer and external peripherals connected to it! For occasional debugging, a USB-C cable with the power lead cut is the simplest solution.\\
+
+To use a regular USB-C cable while Walter is powered from the carrier board, place an OR-ing element between the carrier supply and the VIN pin, as shown in Figure \ref{fig:vin_oring}. Whichever source has the highest voltage then powers Walter, and no current can flow from the USB port back into the carrier supply.
+\begin{itemize}
+	\item \textbf{Schottky diode:} the simplest solution, suited for a 5V carrier supply. Choose a part rated for at least 2A with a low forward voltage. VIN then sits a few hundred millivolts below the carrier supply, so a connected USB port takes over automatically.
+	\item \textbf{Ideal diode:} an ideal diode IC, or an ideal diode controller with an external MOSFET. Use this when the carrier supply is low, for example a single Li-ion cell or a 3.3V to 4.2V rail, where the drop of a Schottky diode would push VIN below the recommended 3.3V. It must block reverse current and be rated for at least 1.5A peak. A single MOSFET used as reverse polarity protection is not sufficient, because it conducts in both directions once it is switched on.
+\end{itemize}
+
+The OR-ing element only protects the carrier supply. To also avoid feeding current into the computer, the voltage the carrier delivers on VIN must stay below the USB voltage (nominally 5V). A 5V supply with a Schottky diode, or a supply below 4.5V with an ideal diode, meets this. Do not connect other circuits of the carrier board to the VIN side of the OR-ing element, unless they may be powered from the USB port.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[font=\small, box/.style={draw, rounded corners=2pt, minimum height=10mm, minimum width=18mm, align=center, inner sep=3pt}]
+	% board outlines
+	\draw[dashed, gray] (0,-2.6) rectangle (6.6,1.5);
+	\node[gray, anchor=south west] at (0,-2.6) {Carrier board};
+	\draw[dashed, gray] (6.6,-2.6) rectangle (11.2,1.5);
+	\node[gray, anchor=south east] at (11.2,-2.6) {Walter};
+	% carrier supply
+	\node[box] (sup) at (1.3,0) {Carrier\\supply};
+	% OR-ing diode
+	\draw[thick] (sup.east) -- (2.9,0);
+	\filldraw[fill=white, thick] (2.9,0.3) -- (3.5,0) -- (2.9,-0.3) -- cycle;
+	\draw[thick] (3.5,0.3) -- (3.5,-0.3);
+	\node[align=center, above] at (3.2,0.35) {Schottky or\\ideal diode};
+	\draw[thick] (3.5,0) -- (6.6,0);
+	% bulk capacitors
+	\fill (5.0,0) circle (1.5pt);
+	\draw[thick] (5.0,0) -- (5.0,-0.8);
+	\draw[thick] (4.7,-0.8) -- (5.3,-0.8);
+	\draw[thick] (4.7,-0.95) -- (5.3,-0.95);
+	\draw[thick] (5.0,-0.95) -- (5.0,-1.5);
+	\draw[thick] (4.75,-1.5) -- (5.25,-1.5);
+	\draw[thick] (4.85,-1.6) -- (5.15,-1.6);
+	\draw[thick] (4.95,-1.7) -- (5.05,-1.7);
+	\node[anchor=east] at (4.65,-0.875) {2 $\times$ 10\textmu F};
+	% VIN pin
+	\filldraw[fill=white, thick] (6.6,0) circle (3pt);
+	\node[anchor=north east] at (6.5,-0.1) {VIN pin};
+	% inside Walter
+	\draw[thick] (6.7,0) -- (9.0,0);
+	\fill (7.8,0) circle (1.5pt);
+	\draw[thick] (7.8,0) -- (7.8,-1.2);
+	\node[box] at (7.8,-1.7) {GM02SP and\\3.3V DC-DC};
+	\node[box] (usb) at (9.9,0) {USB-C};
+	\draw[thick] (9.0,0) -- (usb.west);
+	\node[above] at (8.4,0) {VBUS};
+	% computer
+	\node[box] (pc) at (13.8,0) {Computer};
+	\draw[thick] (usb.east) -- (pc.west);
+	\node[above] at (12.0,0) {cable};
+\end{tikzpicture}
+\caption{OR-ing element on the carrier board, required when a regular USB-C cable is connected while the carrier board powers Walter.}
+\label{fig:vin_oring}
+\end{figure}
+
+\subsubsection{Power Output} \label{power_output}
+Walter contains a DC-DC converter which takes power from VIN and converts it to a regulated 3.3VDC supply. This rail powers the ESP32-S3 module and the 3V3 OUT pin. Below a VIN of 3.3V the converter runs at 100\% duty cycle and the 3.3V rail follows VIN.\\
+
+The 3V3 OUT pin is switched by a P-channel MOSFET which is controlled by IO0 (pin 4):
+\begin{itemize}
+	\item The enable is active low: IO0 low switches 3V3 OUT on, IO0 high switches it off. IO0 is a strapping pin which is pulled high during reset, so 3V3 OUT is off while the ESP32-S3 boots. Pulling IO0 low externally during reset puts the ESP32-S3 in download (DFU) mode.
+	\item The maximum load on 3V3 OUT is 250mA. The 3.3V rail is shared with the ESP32-S3, which needs the remaining capacity of the converter for WiFi and BLE transmission.
+	\item The maximum capacitive load on 3V3 OUT is 1\textmu F. The switch has no slew rate control, so the load capacitance is charged from the 3.3V rail of the ESP32-S3 the moment 3V3 OUT is switched on. A larger capacitance causes a voltage dip that can reset the ESP32-S3.
+	\item 3V3 OUT has no current limit or short-circuit protection. A short or an overload pulls down the supply of the ESP32-S3.
+\end{itemize}
+
+Loads that need more capacitance, 10\textmu F maximum, should use a load switch with slew rate control on the carrier board, or be powered from VIN. A dedicated point-of-load converter powered from VIN is typically an even better choice, and is required for loads above 250mA.
+
+\subsubsection{Power Consumption} \label{power_consumption}
+Table \ref{table_power_consumption} lists the typical current consumption of Walter, measured at VIN = 5.0V.
+
+\begin{table}[!h]
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|c|}
+\hline
+{\bf Operating mode} & {\bf Typical current @ VIN = 5.0V} \\
+\hline
+\hline
+Deep sleep, modem in PSM & 9.5\textmu A \\
+\hline
+Modem in PSM, CPU running at 10MHz & 10mA \\
+\hline
+Modem in PSM, CPU running at 240MHz & 60mA \\
+\hline
+LTE transmit peak, CPU running at 240MHz & 450mA \\
+\hline
+\end{tabular}
+\caption{\label{table_power_consumption}Typical current consumption}
+\end{center}
+\end{table}
+
+For the current consumption of the individual radio modes, please refer to the datasheets of the ESP32-S3-WROOM-1 (WiFi and BLE) and the Sequans GM02SP (LTE-M, NB-IoT and GNSS).\\
+
+Because the modem is powered directly from VIN, its peak current rises when VIN drops. The worst-case peak input current, with LTE transmitting at 23dBm, WiFi transmitting and 250mA drawn from 3V3 OUT at the same time, is 1.5A at VIN = 3.0V and 1.0A at VIN = 5.0V, including a 20\% margin. Size the power supply for these peaks and place the bulk capacitors described in section \ref{power_input}.
+
 \subsection{GPIO} \label{gpio}
-All GPIO pins exposed via the physical pin headers on Walter are 3.3V resistant. If you want to connect 5V or other forms of logic, please use a suitable logic level converter or voltage divider.\\
+All GPIO pins exposed via the physical pin headers on Walter use 3.3V logic levels and are not 5V tolerant. If you want to connect 5V or other forms of logic, please use a suitable logic level converter or voltage divider.\\
 
 Please reference the corresponding datasheets for all minimum, maximum and typical ratings of I/O pins of the ESP32-S3-WROOM or Sequans GM02SP Modules that may or may not be exposed on the Walter Development Board.
 
 \newpage
-\section{Mechanical information}
-\begin{figure}[h]
+\section{Mechanical information} \label{mechanical}
+The drawings in this section show hardware revision v1.6. All dimensions are in mm. Unless stated otherwise, the general tolerance is $\pm$0.2mm. The PCB is 1.6mm thick ($\pm$10\%). The positions in Table \ref{table_mech_positions} are measured from the centre line of the board (X, positive towards pins 15 to 28 in the top view) and from the USB-C end of the board (Y).
+
+\subsection{Top and bottom view} \label{mech_views}
+\begin{figure}[H]
     \centering
-    \includegraphics[height=13cm]{mechanical-front.png}
-    \includegraphics[height=13cm]{mechanical-back.png}
-    \caption{Mechanical Drawing Front and Rear View - Unit in mm}
-    \label{fig:mechanical_front}
+    \input{drawings/mechanical-views.tex}
+    \caption{Top and bottom view of Walter. In the top view the header pins are shown with dashed lines, pin 1 is marked with a square. Unit: mm.}
+    \label{fig:mechanical_views}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.15}
+\input{drawings/mechanical-table.tex}
+\caption{\label{table_mech_positions}Position of connectors and components, numbers refer to Figure \ref{fig:mechanical_views}}
+\end{table}
+
+\subsection{Side view and mounting heights} \label{mech_side}
+Walter has two 14-pin 2.54mm SMT pin headers on the bottom side (Würth Elektronik 61001418221 or equivalent), with 6.0mm long pins of 0.64mm square. Walter can be soldered into the carrier board, using reflow with pin-in-paste or wave soldering (see section \ref{manufacturing}), or it can be plugged into two 14-pin sockets. The recommended socket is the Würth Elektronik 61301411821, which is 8.5mm high.
+
+\begin{figure}[H]
+    \centering
+    \input{drawings/mechanical-side.tex}
+    \caption{Side view of Walter soldered on a carrier board, seen from the side of pins 1 to 14. Unit: mm.}
+    \label{fig:mechanical_side}
+\end{figure}
+
+\begin{table}[H]
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|c|c|}
+\hline
+{\bf Parameter (mm)} & {\bf Soldered} & {\bf In socket 61301411821} \\
+\hline
+\hline
+Bottom of the Walter PCB above the carrier board & 3.3 & 11.8 \\
+\hline
+Top of Walter above the carrier board, max. & 8.3 & 16.8 \\
+\hline
+Pin length below the header body & 6.0 & 6.0 \\
+\hline
+\end{tabular}
+\caption{\label{table_mounting_heights}Mounting heights}
+\end{center}
+\end{table}
+
+The highest parts on the top side are the USB-C receptacle (max. 3.4mm) and the ESP32-S3 module (3.1mm). On the bottom side there are only the pin headers, the test pads and the Nano-SIM holder (1.35mm). When Walter is soldered, there is 3.3mm between the carrier board and the bottom of Walter, and 1.95mm below the Nano-SIM holder. Parts on the carrier board below Walter must stay below these heights.\\
+
+The Nano-SIM holder is a push-pull type. The card is inserted from the antenna end of Walter, as shown by the arrow in Figure \ref{fig:mechanical_views}. If the SIM card has to be inserted or removed while Walter is mounted, keep the area in front of the holder free. Otherwise, insert the SIM card before mounting Walter.
+
+\subsection{Recommended carrier board footprint} \label{carrier_footprint}
+Figure \ref{fig:carrier_footprint} shows the recommended footprint, seen from the top of the carrier board with Walter mounted on top. The same footprint is used for soldering Walter and for the sockets: 28 plated through holes of 1.02mm with 2.0mm pads, pin 1 at the USB-C end. The hatched area is the WiFi/BLE antenna keepout described in section \ref{antenna_keepout}. KiCad footprints for both mounting options are available at \url{https://github.com/QuickSpot/walter-hardware/tree/main/walter/footprint}.
+
+\subsection{u.FL WiFi/BLE version (P000000119)} \label{mech_ufl}
+P000000119 uses the ESP32-S3-WROOM-1U module, which is 19.2mm long instead of 25.5mm and has a u.FL connector for an external WiFi/BLE antenna. The board outline, the pinout, the other connectors and all other dimensions are the same as for the versions with a PCB antenna. The last 6.3mm at the antenna end has no parts, and no antenna keepout is needed on the carrier board. The module is 3.2mm high. The position of the u.FL connector on the module is given in the ESP32-S3-WROOM-1U datasheet.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[b]{0.52\textwidth}
+\centering
+\input{drawings/mechanical-footprint.tex}
+\caption{Recommended carrier board footprint. Unit: mm.}
+\label{fig:carrier_footprint}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.44\textwidth}
+\centering
+\input{drawings/mechanical-ufl.tex}
+\caption{Top view of P000000119 (u.FL WiFi/BLE version). Unit: mm.}
+\label{fig:mechanical_ufl}
+\end{minipage}
+\end{figure}
+
+\subsection{WiFi/BLE antenna keepout} \label{antenna_keepout}
+The PCB antenna of the ESP32-S3 module is located at the end of Walter opposite to the USB-C connector. Copper and metal close to the antenna detune it and reduce the WiFi and BLE range, so the carrier board must respect the following guidelines. They apply to the versions with a PCB antenna (P000000100 and P000000118). P000000119 has a u.FL connector for an external antenna and needs no keepout.
+\begin{itemize}
+	\item \textbf{Preferred:} place Walter at the edge of the carrier board, with the antenna end overhanging the edge or with the carrier board cut away below and next to the antenna.
+	\item \textbf{Keepout zone:} keep an area of at least 24.8mm (the full width of Walter) by 6mm, measured from the antenna end of Walter, free of copper on all layers. No traces, ground pour, vias or components are allowed in this zone.
+	\item \textbf{Alternative:} when the antenna cannot overhang, align the antenna end of Walter with the edge of the carrier board. Walter can then be placed anywhere along that edge, also in the middle. Extend the 6mm deep keepout zone along the board edge and make it as wide as possible on both sides of Walter.
+	\item Keep metal parts such as enclosures, batteries, displays, screws and cables at least 15mm away from the antenna in all directions.
+	\item Route USB, UART and switching power supply traces away from the antenna end.
+\end{itemize}
+Always verify the WiFi and BLE performance in the final product and enclosure.
+
+\begin{figure}[h]
+\centering
+\tikzset{
+	walter/.pic={
+		% outline in mm, USB-C end at y=0, antenna end at y=55
+		\filldraw[fill=white, thick, rounded corners=1.5] (-10,0) -- (10,0) -- (10,7.5) -- (12.4,7.5) -- (12.4,45) -- (10,45) -- (10,55) -- (-10,55) -- (-10,45) -- (-12.4,45) -- (-12.4,7.5) -- (-10,7.5) -- cycle;
+		\foreach \i in {0,...,13} {
+			\fill (-8.89,9.72+2.54*\i) circle (0.5);
+			\fill (8.89,9.72+2.54*\i) circle (0.5);
+		}
+		\node[font=\scriptsize] at (0,3) {USB-C};
+		\node[font=\scriptsize, align=center] at (0,26) {Walter\\top view};
+	}
+}
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\begin{tikzpicture}[x=0.09cm, y=0.09cm]
+	\fill[green!25!gray!40] (-28,-12) rectangle (28,49);
+	\node[font=\scriptsize, anchor=south west] at (-28,-12) {Carrier board};
+	\draw[thick] (-28,49) -- (28,49);
+	\pic at (0,0) {walter};
+	\fill[pattern=north east lines, pattern color=red] (-12.4,49) rectangle (12.4,55);
+	\draw[red, thick] (-12.4,49) rectangle (12.4,55);
+	\node[font=\scriptsize, align=center, anchor=south] at (0,57) {Antenna overhangs\\the board edge};
+\end{tikzpicture}\\[2mm]
+{\small (a) Preferred: at the edge of the carrier board}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\textwidth}
+\centering
+\begin{tikzpicture}[x=0.09cm, y=0.09cm]
+	\fill[green!25!gray!40] (-40,-12) rectangle (40,55);
+	\node[font=\scriptsize, anchor=south west] at (-40,-12) {Carrier board};
+	\draw[thick] (-40,55) -- (40,55);
+	\fill[white] (-36,49) rectangle (36,55);
+	\pic at (0,0) {walter};
+	\fill[pattern=north east lines, pattern color=red] (-36,49) rectangle (36,55);
+	\draw[red, thick] (-36,49) rectangle (36,55);
+	\draw[<->, thick] (-36,58.5) -- (36,58.5);
+	\node[font=\scriptsize, align=center, anchor=south] at (0,59.5) {Antenna end aligned with the board edge,\\keepout as wide as possible};
+\end{tikzpicture}\\[2mm]
+{\small (b) Alternative: antenna end at the board edge}
+\end{minipage}
+\caption{WiFi/BLE antenna keepout (hatched): no copper on any layer. Minimum zone 24.8mm $\times$ 6mm from the antenna end of Walter.}
+\label{fig:antenna_keepout}
 \end{figure}
 
 \section{Software}
@@ -332,13 +574,23 @@ Every Walter comes pre-flashed with an example application. This demonstration f
 
 To use this pre-flashed demonstrator, install the LTE and GNSS antennas and insert a SIM card that supports LTE-M. Make sure the GNSS antenna has a clear view of the sky and allow Walter about 10 minutes to connect and upload its first message. Every Walter identifies itself using the MAC address printed on the bag in which it was shipped. \\
 
-If you do not want to upload your position to the public \href{https://walterdemo.quickspot.io}{walterdemo.quickspot.io} platform, or if you want to run your own code, which is what Walter is designed for, you can flash your own firmware. You can easily program and upload your own firmware for Walter using Arduino, ESP-IDF, MicroPython or Zephyr. Please refer to the "Getting Started with Walter" guide available on our GitHub to get you up and running fast.
+If you do not want to upload your position to the public \href{https://walterdemo.quickspot.io}{walterdemo.quickspot.io} platform, or if you want to run your own code, which is what Walter is designed for, you can flash your own firmware. You can easily program and upload your own firmware for Walter using Arduino, ESP-IDF, MicroPython or Zephyr. Please refer to the "Getting Started with Walter" guide available on our GitHub to get you up and running fast. The original demonstration firmware can be restored at any time with the online flasher (see section \ref{online_flasher}).
+
+\subsection{Online flasher} \label{online_flasher}
+Walter can be flashed straight from your browser with the online flasher at \url{https://www.quickspot.io/flash.html}, without installing drivers or a toolchain. Connect Walter to your computer with a USB-C cable, close any other program that uses its serial port and use a browser with Web Serial support, such as Chrome or Edge. The online flasher offers:
+\begin{itemize}
+	\item Ready-made firmware images, for example to update the firmware of the Sequans GM02SP modem or to restore the original factory firmware.
+	\item Flashing your own firmware: upload a .bin file built with Arduino, ESP-IDF or PlatformIO. Use offset \verb+0x10000+ for application images and \verb+0x0+ for merged images. Optionally, the entire flash memory can be erased first.
+	\item A serial terminal (9600 to 921600 baud) which opens automatically once flashing is done.
+\end{itemize}
 
 \subsection{AT commands}
 
 The full set of supported AT commands can be found in the documentation of the Sequans GM02SP. This can be downloaded from this link: \href{https://www.renesas.com/eu/en/document/mah/ryz024-modules-command-users-manual?language=en}{https://www.renesas.com/eu/en/document/mah/ryz024-modules-command-users-manual?language=en}.
 
 \subsection{Manual SFU of the GM02SP}
+
+The easiest way to update the firmware of the GM02SP is the online flasher (see section \ref{online_flasher}). The manual procedure below is an alternative which uses the UART of the modem directly.\\
 
 The second hardware UART of the GM02SP, namely \verb+UART1+, is used for manual firmware upgrades. To do a manual serial SFU of the GM02SP in Walter you must connect \verb+UART1+ via the testpads on the bottom of the module. Use an FTDI UART and make the following connections:
 \begin{itemize}
@@ -372,8 +624,181 @@ Storage humidity & \%RH & 5 & & 90 \\
 \end{center}
 Please note that no condensation may occur on the PCB and components. 
 
-\section{Soldering profile}
-The Walter module can be reflow soldered with a low temperature profile. 
+\section{Manufacturing information: soldering and MSL} \label{manufacturing}
+The Walter module can be assembled using either a reflow soldering process with pin-in-paste technology or a wave soldering process.\\
+
+When the module is subjected to reflow soldering, it shall be handled in accordance with Moisture Sensitivity Level 3 (MSL 3) requirements. MSL handling is not required for wave soldering processes in which the module body temperature remains below 125$^\circ$C.\\
+
+For reflow soldering, the profile shown in Figure~\ref{fig:reflow-profile} is recommended. This profile is suitable for use with SAC305 lead-free solder paste.
+
+\begin{figure}[htbp]
+    \centering
+
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.95\textwidth,
+        height=0.55\textwidth,
+        xmin=0,
+        xmax=360,
+        ymin=20,
+        ymax=260,
+        xlabel={Time [s]},
+        ylabel={Temperature [$^\circ$C]},
+        xtick={0,60,120,180,240,300,360},
+        ytick={25,50,100,150,180,200,217,240,260},
+        grid=major,
+        grid style={gray!20},
+        axis line style={black!70},
+        tick style={black!70},
+        legend style={
+            at={(0.03,0.58)},
+            anchor=west,
+            draw=none,
+            fill=white,
+            font=\small
+        },
+        clip=false
+    ]
+
+    % --------------------------------------------------------
+    % Target reflow profile
+    % --------------------------------------------------------
+    \addplot[
+        very thick,
+        smooth
+    ]
+    coordinates {
+        (0,25)
+        (60,85)
+        (120,150)
+        (180,180)
+        (205,200)
+        (220,217)
+        (240,233)
+        (252,240)
+        (264,238)
+        (280,225)
+        (288,217)
+        (310,160)
+        (330,100)
+        (360,50)
+    };
+
+    \addlegendentry{Target reflow profile}
+
+    % --------------------------------------------------------
+    % SAC305 liquidus
+    % --------------------------------------------------------
+    \addplot[
+        dashed,
+        thick
+    ]
+    coordinates {
+        (0,217)
+        (360,217)
+    };
+
+    \node[
+        anchor=north east,
+        font=\small,
+        fill=white,
+        inner sep=2pt,
+        yshift=-3pt
+    ] at (axis cs:352,217)
+    {SAC305 liquidus: 217\,°C};
+
+    % --------------------------------------------------------
+    % Maximum package body temperature
+    % --------------------------------------------------------
+    \addplot[
+        dashed,
+        very thick
+    ]
+    coordinates {
+        (0,245)
+        (360,245)
+    };
+
+    \node[
+        anchor=south east,
+        font=\small\bfseries,
+        fill=white,
+        inner sep=2pt,
+        yshift=2pt
+    ] at (axis cs:352,245)
+    {Maximum body temperature: 245\,°C};
+
+    % --------------------------------------------------------
+    % Peak temperature marker
+    % --------------------------------------------------------
+    \addplot[
+        only marks,
+        mark=*,
+        mark size=2.5pt
+    ]
+    coordinates {
+        (252,240)
+    };
+
+    \node[
+        anchor=north east,
+        font=\small,
+        fill=white,
+        inner sep=2pt,
+        xshift=-4pt,
+        yshift=-6pt
+    ] at (axis cs:252,240)
+    {Target peak: 240\,°C};
+
+    % --------------------------------------------------------
+    % Time above liquidus
+    % --------------------------------------------------------
+    \draw[
+        <->,
+        thick
+    ]
+    (axis cs:220,198)
+    --
+    (axis cs:288,198);
+
+    \node[
+        anchor=north,
+        font=\small,
+        fill=white,
+        inner sep=1pt,
+        yshift=-2pt
+    ] at (axis cs:254,198)
+    {Time above 217\,°C $\approx$ 68 s};
+
+    % --------------------------------------------------------
+    % Soak region
+    % --------------------------------------------------------
+    \draw[
+        <->,
+        thick
+    ]
+    (axis cs:120,140)
+    --
+    (axis cs:180,140);
+
+    \node[
+        anchor=north,
+        font=\small,
+        fill=white,
+        inner sep=1pt,
+        yshift=-2pt
+    ] at (axis cs:150,140)
+    {Soak region};
+
+    \end{axis}
+    \end{tikzpicture}
+
+    \caption{
+        Recommended lead-free reflow profile for the Walter module.
+    }
+
+    \label{fig:reflow-profile}
+\end{figure}
 
 \section{Prohibited Use and Resale Statement}
 This electronics manual serves as a legal document outlining the terms of use and resale of the electronics herein described. By accessing, using, or reselling these electronics, you agree to abide by the terms outlined herein.
@@ -398,6 +823,7 @@ Walter has the following certifications:
 	\item CE: European Economic Area
 	\item UKCA: Great Britain
 	\item RCM: New Zealand and Australia
+	\item Verizon: approved through the Verizon Open Development program (see section \ref{verizon})
 \end{itemize}
 
 \subsection{Federal Communication Commission Interference Statement}
@@ -434,7 +860,7 @@ The module is limited to OEM installation only. The module is limited to install
 {\bf IMPORTANT NOTE}: In the event that these conditions cannot be met (for example certain laptop configurations or co–location with another transmitter), then the FCC authorization is no longer considered valid and the FCC ID cannot be used on the final product. In these circumstances, the OEM integrator will be responsible for re–evaluating the end product (including the transmitter) and obtaining a separate FCC authorization. 
 
 \subsection{Antennas}
-The maximum LTE antenna gain values (accounting for cable attenuation) to comply with the FCC maximum ERP/EIRP limits and with RF Exposure rules:
+The maximum LTE antenna gain values (accounting for cable attenuation) to comply with the FCC and RED maximum ERP/EIRP limits and with RF Exposure rules:
 \begin{itemize}
 	\item LTE band 2 (1900 PCS): 8.0 dBi
 	\item LTE band 4 (AWS-1): 5.0 dBi
@@ -471,7 +897,20 @@ following two conditions:
 \subsection{Manual information to the end user}
 The OEM integrator has to be aware not to provide information to the end user regarding how to install or remove this RF module in the user’s manual of the end product which integrates this module. In the user manual of the end product, the end user has to be informed that the equipment complies with FCC radio–frequency exposure guidelines set forth for an uncontrolled environment. The end user has to also be informed that any changes or modifications not expressly approved by the manufacturer could void the user’s authority to operate this equipment. The end user manual shall include all required regulatory information/warning as show in this manual. The maximum operating ambient temperature of the equipment declared by the manufacturer is -40\textdegree C to +85\textdegree C.
 
-\section{Orderable part numbers}
+\subsection{Verizon} \label{verizon}
+Walter is approved for use on the Verizon network through the Verizon Open Development program and is listed as device 32161 in the Verizon device showcase:\newline \url{https://opendevelopment.verizonwireless.com/device-showcase/device/32161}\\
+
+The listing contains the following details:
+\begin{itemize}
+	\item Network technology: LTE-M (Cat M1)
+	\item Verizon LTE bands: Band 4 (1700MHz), Band 12 (700MHz) and Band 13 (700MHz)
+	\item FoTA client: LWM2M, using the Verizon FoTA solution
+	\item Security level 2
+\end{itemize}
+Walter is approved by Verizon as a modem, not as a module. End products that use Walter therefore do not need to go through Verizon certification themselves: design Walter into your product and it can connect directly to the Verizon network. Please contact us if you have questions about using Walter on the Verizon network.
+
+\section{Orderable part numbers} \label{orderable_parts}
+P000000100 is the default version of Walter. P000000118 and P000000119 are optional versions which are available through direct ordering from DPTechnics.
 \begin{center}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l|l|l|l|l|}
